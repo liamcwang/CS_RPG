@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Cs_rpg/1.0.0": {
+        "runtime": {
+          "Cs_rpg.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Cs_rpg/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
