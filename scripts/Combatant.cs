@@ -35,4 +35,10 @@ public abstract class Combatant {
 
     }
 
+    public virtual Combatant RandomTarget(Combat currCombat, TargetType targetType){
+        // TODO: Improve random selection
+        var rand = new Random();
+        int randInt = rand.Next(0, currCombat.combatants.Count());
+        return currCombat.combatants[randInt];
+    }
 }
