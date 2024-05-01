@@ -13,8 +13,8 @@ public class GameManager {
     }
 
     // TODO: need to figure out how to get the combatants into combat
-    public static Player[] players = [new Player(), new Player()];
-    public static Enemy[] enemies = [new Enemy(), new Enemy()];
+    public static Player[] players = [new Player("Leonardo"), new Player("Davinci")];
+    public static Enemy[] enemies = [new Enemy("Rick"), new Enemy("Astley")];
 
     private GameManager() {
 
