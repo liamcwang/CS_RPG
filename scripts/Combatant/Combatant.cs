@@ -4,6 +4,7 @@ public abstract class Combatant {
     public int team = -1;
     public string name = "";
     public CombatAction? action;
+    public List<CombatSkill>? skills;
     public float health = 10f;
 
     public virtual void OnCombatStart(object? source, EventArgs e) {

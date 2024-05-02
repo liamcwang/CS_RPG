@@ -2,9 +2,9 @@ using System;
 
 public class Enemy : Combatant
 {
-    public new int team = 1;
     
     public Enemy(string newName) {
+        team = 1;
         name = newName;
     }
 

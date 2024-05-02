@@ -26,22 +26,23 @@ public class Combat {
 
     public void Start() {
         OnCombatStart();
-
-        for (int i = 0; i < combatants.Count(); i++) {
-            Combatant combatant = combatants[i];
-            int team = combatant.team;
-            if (combatTeams.ContainsKey(team)) {
-                combatTeams[team].Add(combatant);
-            } else {
-                combatTeams[team] = new List<Combatant>();
-                combatTeams[team].Add(combatant);
-            }
-        }
     }
 
     protected virtual void OnCombatStart() {
         if (CombatStart != null) {
             CombatStart?.Invoke(this, EventArgs.Empty);
+
+            for (int i = 0; i < combatants.Count(); i++) {
+                Combatant combatant = combatants[i];
+                int team = combatant.team;
+                if (combatTeams.ContainsKey(team)) {
+                    combatTeams[team].Add(combatant);
+                } else {
+                    combatTeams[team] = new List<Combatant>();
+                    combatTeams[team].Add(combatant);
+                }
+            }
+
             CombatLoop();
         }
     }

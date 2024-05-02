@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using CollectionsUtil;
-// An action holds a bundle of effects which must be designated targets
 
 public enum TargetType {NONE, ENEMY, ALLY, ANY};
 public enum RangeType {NONE, SELF, SINGLE, MULTIPLE};

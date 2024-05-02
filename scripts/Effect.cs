@@ -16,4 +16,8 @@ public class Effect {
     public void Damage(Combatant target) {
         target.health -= value;
     }
+
+    public void Heal(Combatant target) {
+        target.health += value;
+    }
 }
