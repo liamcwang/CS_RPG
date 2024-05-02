@@ -47,6 +47,7 @@ public class Combat {
         }
     }
 
+    // TODO: implement turn loop
     protected void CombatLoop() {
         StartPhase?.Invoke(this);
         MainPhase?.Invoke(this); // combatants choose actions on this step

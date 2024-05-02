@@ -13,8 +13,9 @@ public class GameManager {
     }
 
     // TODO: need to figure out how to get the combatants into combat
-    public static Player[] players = [new Player("Leonardo"), new Player("Davinci")];
-    public static Enemy[] enemies = [new Enemy("Rick"), new Enemy("Astley")];
+    // TODO: Figure out how to randomly send a preset group of enemies
+    public static Combatant[] players = [new Combatant("Leonardo", 0), new Combatant("Davinci", 0)];
+    public static Combatant[] enemies = [new Combatant("Rick", 1), new Combatant("Astley", 1)];
 
     private GameManager() {
 
@@ -30,6 +31,14 @@ public class GameManager {
 
 
     }
+}
 
-    
+[System.Serializable]
+public struct CombatantGroup{
+    public string name = "";
+    public List<Combatant> combatants = new List<Combatant>();
+
+    public CombatantGroup(string newName) {
+        name = newName;
+    }
 }

@@ -2,7 +2,10 @@ using System;
 using System.Collections;
 using CollectionsUtil;
 
-public class CombatSkill {
+public enum TargetType {NONE, ENEMY, ALLY, ANY};
+public enum RangeType {NONE, SELF, SINGLE, MULTIPLE};
+
+public struct CombatSkill {
     public string name = "Big Chungus";
     public int priority = 0;
 

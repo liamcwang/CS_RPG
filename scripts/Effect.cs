@@ -3,8 +3,8 @@ using System;
 /// <summary>
 /// Holds a single trigger effect, defined when constructed.
 /// </summary>
-public class Effect {
-    float value = 1;
+public struct Effect {
+    public float value = 1;
     public delegate void Trigger(Combatant target);
     public Trigger effectTrigger;
 
@@ -12,7 +12,7 @@ public class Effect {
         effectTrigger = Damage;
     }
 
-    // will need to revisit this in the future
+    // TODO: Define the logic of damage better
     public void Damage(Combatant target) {
         target.health -= value;
     }
