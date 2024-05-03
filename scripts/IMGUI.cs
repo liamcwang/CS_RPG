@@ -51,7 +51,7 @@ namespace ImGuiNET {
                 if (!_window.Exists) { break; }
                 _controller.Update(deltaTime, snapshot);
 
-
+                // TODO: should probably invoke some kind of event here
                 SubmitUI();
 
                 _cl.Begin();
