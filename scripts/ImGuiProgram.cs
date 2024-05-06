@@ -16,7 +16,7 @@ namespace ImGuiNET {
         protected ImGuiController _controller;
         protected CommandList _cl;
 
-        public delegate void GuiRefresh();
+        public delegate bool GuiRefresh();
         public event GuiRefresh guiUpdate;
 
         public static Vector3 _clearColor = new Vector3(0.45f, 0.55f, 0.6f);
@@ -34,6 +34,7 @@ namespace ImGuiNET {
             };
             _cl = _gd.ResourceFactory.CreateCommandList();
             _controller = new ImGuiController(_gd, _gd.MainSwapchain.Framebuffer.OutputDescription, _window.Width, _window.Height);
+            
 
             var stopwatch = Stopwatch.StartNew();
             float deltaTime = 0f;
@@ -43,7 +44,8 @@ namespace ImGuiNET {
                 stopwatch.Restart();
                 InputSnapshot snapshot = _window.PumpEvents();
                 if (!_window.Exists) { break; }
-                RunProgram();
+                
+                
                 _controller.Update(deltaTime, snapshot);
 
                 // TODO: should probably invoke some kind of event here
@@ -57,11 +59,15 @@ namespace ImGuiNET {
                 _gd.SubmitCommands(_cl);
                 _gd.SwapBuffers(_gd.MainSwapchain);
                 
+
             }
             _gd.WaitForIdle();
             _controller.Dispose();
             _cl.Dispose();
             _gd.Dispose();
+        }
+
+        protected virtual void StartProgram() {
         }
 
         protected virtual void RunProgram() {

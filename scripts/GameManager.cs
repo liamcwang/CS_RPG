@@ -28,7 +28,11 @@ public class GameManager {
             activeCombat.CombatStart += enemies[i].OnCombatStart;
         }
         activeCombat.Start();
-
+        
+        while(true) {
+            Console.WriteLine("Something");
+            Thread.Sleep(1000);
+        }
 
     }
 }

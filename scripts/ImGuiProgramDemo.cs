@@ -23,10 +23,11 @@ namespace ImGuiNET {
         private static uint s_tab_bar_flags = (uint)ImGuiTabBarFlags.Reorderable;
         static bool[] s_opened = { true, true, true, true };
 
-        protected override void RunProgram()
-        {
-            base.RunProgram();
-        }
+        // protected override Task<bool> RunProgram()
+        // {
+        //     base.RunProgram();
+        //     return Task.FromResult<bool>(true);
+        // }
 
         protected override unsafe void SubmitUI()
         {
