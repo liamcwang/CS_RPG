@@ -10,11 +10,7 @@ using Veldrid.StartupUtilities;
 using static ImGuiNET.ImGuiNative;
 
 namespace ImGuiNET {
-    public class ImGuiProgram {
-        private static Sdl2Window _window;
-        private static GraphicsDevice _gd;
-        private static ImGuiController _controller;
-        private static CommandList _cl;
+    public class ImGuiProgramDemo : ImGuiProgram{
 
         private static float _f = 0.0f;
         private static int _counter = 0;
@@ -27,72 +23,39 @@ namespace ImGuiNET {
         private static uint s_tab_bar_flags = (uint)ImGuiTabBarFlags.Reorderable;
         static bool[] s_opened = { true, true, true, true };
 
-        public static void Run() {
-            VeldridStartup.CreateWindowAndGraphicsDevice(
-                new WindowCreateInfo(50, 50, 1280, 720, WindowState.Normal, "Big Chungus"), 
-                new GraphicsDeviceOptions(true, null, true, ResourceBindingModel.Improved, true, true), 
-                out _window,
-                out _gd);
-            _window.Resized += () =>
-            {
-                _gd.MainSwapchain.Resize((uint)_window.Width, (uint)_window.Height);
-                _controller.WindowResized(_window.Width, _window.Height);
-            };
-            _cl = _gd.ResourceFactory.CreateCommandList();
-            _controller = new ImGuiController(_gd, _gd.MainSwapchain.Framebuffer.OutputDescription, _window.Width, _window.Height);
-
-            var stopwatch = Stopwatch.StartNew();
-            float deltaTime = 0f;
-            while (_window.Exists)
-            {
-                deltaTime = stopwatch.ElapsedTicks / (float)Stopwatch.Frequency;
-                stopwatch.Restart();
-                InputSnapshot snapshot = _window.PumpEvents();
-                if (!_window.Exists) { break; }
-                _controller.Update(deltaTime, snapshot);
-
-                // TODO: should probably invoke some kind of event here
-                SubmitUI();
-
-                _cl.Begin();
-                _cl.SetFramebuffer(_gd.MainSwapchain.Framebuffer);
-                _cl.ClearColorTarget(0, new RgbaFloat(_clearColor.X, _clearColor.Y, _clearColor.Z, 1f));
-                _controller.Render(_gd, _cl);
-                _cl.End();
-                _gd.SubmitCommands(_cl);
-                _gd.SwapBuffers(_gd.MainSwapchain);
-                
-            }
-            _gd.WaitForIdle();
-            _controller.Dispose();
-            _cl.Dispose();
-            _gd.Dispose();
+        protected override void RunProgram()
+        {
+            base.RunProgram();
         }
 
-
-        private static unsafe void SubmitUI()
+        protected override unsafe void SubmitUI()
         {
             {
-            ImGui.Text("");
-            ImGui.Text(string.Empty);
-            ImGui.Text("Hello, world!");                                        // Display some text (you can use a format string too)
-            ImGui.SliderFloat("float", ref _f, 0, 1, _f.ToString("0.000"));  // Edit 1 float using a slider from 0.0f to 1.0f    
-            //ImGui.ColorEdit3("clear color", ref _clearColor);                   // Edit 3 floats representing a color
+                // Demo code adapted from the official Dear ImGui demo program:
+                // https://github.com/ocornut/imgui/blob/master/examples/example_win32_directx11/main.cpp#L172
 
-            ImGui.Text($"Mouse position: {ImGui.GetMousePos()}");
+                // 1. Show a simple window.
+                // Tip: if we don't call ImGui.Begin(string) / ImGui.End() the widgets automatically appears in a window called "Debug".
+                ImGui.Text("");
+                ImGui.Text(string.Empty);
+                ImGui.Text("Hello, world!");                                        // Display some text (you can use a format string too)
+                ImGui.SliderFloat("float", ref _f, 0, 1, _f.ToString("0.000"));  // Edit 1 float using a slider from 0.0f to 1.0f    
+                //ImGui.ColorEdit3("clear color", ref _clearColor);                   // Edit 3 floats representing a color
 
-            ImGui.Checkbox("ImGui Demo Window", ref _showImGuiDemoWindow);                 // Edit bools storing our windows open/close state
-            ImGui.Checkbox("Another Window", ref _showAnotherWindow);
-            ImGui.Checkbox("Memory Editor", ref _showMemoryEditor);
-            if (ImGui.Button("Button"))                                         // Buttons return true when clicked (NB: most widgets return true when edited/activated)
-                _counter++;
-            ImGui.SameLine(0, -1);
-            ImGui.Text($"counter = {_counter}");
+                ImGui.Text($"Mouse position: {ImGui.GetMousePos()}");
 
-            ImGui.DragInt("Draggable Int", ref _dragInt);
+                ImGui.Checkbox("ImGui Demo Window", ref _showImGuiDemoWindow);                 // Edit bools storing our windows open/close state
+                ImGui.Checkbox("Another Window", ref _showAnotherWindow);
+                ImGui.Checkbox("Memory Editor", ref _showMemoryEditor);
+                if (ImGui.Button("Button"))                                         // Buttons return true when clicked (NB: most widgets return true when edited/activated)
+                    _counter++;
+                ImGui.SameLine(0, -1);
+                ImGui.Text($"counter = {_counter}");
 
-            float framerate = ImGui.GetIO().Framerate;
-            ImGui.Text($"Application average {1000.0f / framerate:0.##} ms/frame ({framerate:0.#} FPS)");
+                ImGui.DragInt("Draggable Int", ref _dragInt);
+
+                float framerate = ImGui.GetIO().Framerate;
+                ImGui.Text($"Application average {1000.0f / framerate:0.##} ms/frame ({framerate:0.#} FPS)");
             }
 
             if (_showAnotherWindow)
@@ -182,24 +145,24 @@ namespace ImGuiNET {
             }
 
             
-            // // On .NET Standard 2.1 or greater, you can use ReadOnlySpan<char> instead of string to prevent allocations.
-            // long allocBytesStringStart = GC.GetAllocatedBytesForCurrentThread();
-            // ImGui.Text($"Hello, world {Random.Shared.Next(100)}!");
-            // long allocBytesStringEnd = GC.GetAllocatedBytesForCurrentThread() - allocBytesStringStart;
+            // On .NET Standard 2.1 or greater, you can use ReadOnlySpan<char> instead of string to prevent allocations.
+            long allocBytesStringStart = GC.GetAllocatedBytesForCurrentThread();
+            ImGui.Text($"Hello, world {Random.Shared.Next(100)}!");
+            long allocBytesStringEnd = GC.GetAllocatedBytesForCurrentThread() - allocBytesStringStart;
             // Console.WriteLine("GC (string): " + allocBytesStringEnd);
                 
-            // long allocBytesSpanStart = GC.GetAllocatedBytesForCurrentThread();
-            // ImGui.Text($"Hello, world {Random.Shared.Next(100)}!".AsSpan()); // Note that this call will STILL allocate memory due to string interpolation, but you can prevent that from happening by using an InterpolatedStringHandler.
-            // long allocBytesSpanEnd = GC.GetAllocatedBytesForCurrentThread() - allocBytesSpanStart;
+            long allocBytesSpanStart = GC.GetAllocatedBytesForCurrentThread();
+            ImGui.Text($"Hello, world {Random.Shared.Next(100)}!".AsSpan()); // Note that this call will STILL allocate memory due to string interpolation, but you can prevent that from happening by using an InterpolatedStringHandler.
+            long allocBytesSpanEnd = GC.GetAllocatedBytesForCurrentThread() - allocBytesSpanStart;
             // Console.WriteLine("GC (span): " + allocBytesSpanEnd);
             
-            // ImGui.Text("Empty span:");
-            // ImGui.SameLine();
-            // ImGui.GetWindowDrawList().AddText(ImGui.GetCursorScreenPos(), uint.MaxValue, ReadOnlySpan<char>.Empty);
-            // ImGui.NewLine();
-            // ImGui.GetWindowDrawList().AddText(ImGui.GetCursorScreenPos(), uint.MaxValue, $"{ImGui.CalcTextSize("h")}");
-            // ImGui.NewLine();
-            // ImGui.TextUnformatted("TextUnformatted now passes end ptr but isn't cut off");
+            ImGui.Text("Empty span:");
+            ImGui.SameLine();
+            ImGui.GetWindowDrawList().AddText(ImGui.GetCursorScreenPos(), uint.MaxValue, ReadOnlySpan<char>.Empty);
+            ImGui.NewLine();
+            ImGui.GetWindowDrawList().AddText(ImGui.GetCursorScreenPos(), uint.MaxValue, $"{ImGui.CalcTextSize("h")}");
+            ImGui.NewLine();
+            ImGui.TextUnformatted("TextUnformatted now passes end ptr but isn't cut off");
         }
 
         

@@ -28,7 +28,7 @@ public class Combat {
         OnCombatStart();
     }
 
-    protected virtual void OnCombatStart() {
+    public void OnCombatStart() {
         if (CombatStart != null) {
             CombatStart?.Invoke(this, EventArgs.Empty);
 
@@ -48,7 +48,7 @@ public class Combat {
     }
 
     // TODO: implement turn loop
-    protected void CombatLoop() {
+    public void CombatLoop() {
         StartPhase?.Invoke(this);
         MainPhase?.Invoke(this); // combatants choose actions on this step
         // establish turn priority, and all combatants use up their action accordingly
