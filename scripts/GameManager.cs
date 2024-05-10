@@ -29,10 +29,6 @@ public class GameManager {
         }
         activeCombat.Start();
         
-        while(true) {
-            Console.WriteLine("Something");
-            Thread.Sleep(1000);
-        }
 
     }
 }

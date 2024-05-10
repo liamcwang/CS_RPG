@@ -10,6 +10,7 @@ public class Combatant {
     public List<CombatSkill>? skills;
     public float health = 10f;
     private TargetFunction targetter = (c, tt) => throw new NullReferenceException("No valid target function set");
+    public bool isDefeated = false;
 
     public Combatant(string newName, int teamID) {
         action = new CombatAction(this);
@@ -36,7 +37,13 @@ public class Combatant {
         c.EndPhase += onEndPhase;
     }
 
-    
+    public void TakeDamage(float num) {
+        health -= num;
+        if (health <= 0.1) {
+            Console.WriteLine($"{name} is defeated!");
+            isDefeated = true;
+        }
+    }
 
     public Combatant AssignTarget(Combat currCombat, TargetType targetType) {
         return this;

@@ -20,12 +20,15 @@ public class Combat {
     public int turnNumber = 0;
     public List<CombatAction> actionQueue = new List<CombatAction>();
 
+    public bool combatActive = true;
+
     public Combat() {
         
     }
 
     public void Start() {
         OnCombatStart();
+        
     }
 
     public void OnCombatStart() {
@@ -42,7 +45,13 @@ public class Combat {
                     combatTeams[team].Add(combatant);
                 }
             }
-
+            combatActive = true;
+            turnNumber = 0;
+            while(combatActive) {
+                turnNumber++;
+                Console.WriteLine($"Turn: {turnNumber}");
+                CombatLoop();
+            }
         }
     }
 
@@ -55,7 +64,20 @@ public class Combat {
         for (int i = 0; i < actionQueue.Count(); i++) {
             actionQueue[i].FireAction();
         } // since we have this kind of loop for the mainphase, we could reuse it for each phase of combat
-
+        actionQueue.Clear();
+        foreach (var team in combatTeams.Keys) {
+            int teamLength = combatTeams[team].Count();
+            int numDefeated = 0;
+            for (int i = 0; i <  teamLength; i++) {
+                if (combatTeams[team][i].isDefeated) {
+                    numDefeated++;
+                }
+            }
+            if (numDefeated == teamLength) {
+                combatActive = false;
+                return;
+            }
+        }
         EndPhase?.Invoke(this);
     }
 }

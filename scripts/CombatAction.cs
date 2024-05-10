@@ -26,6 +26,7 @@ public class CombatAction {
             Console.WriteLine($"{origin.name} used {combatSkill.name} on {target.name}!");
             combatSkill.Trigger(target);
         }
+        targets.Clear();
     }
 
     public void PrepareAction(Combat currCombat) {
