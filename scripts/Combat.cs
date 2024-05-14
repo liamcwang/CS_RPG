@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using static EventUtil.GameLogs;
 
 public class Combat {
     
@@ -49,35 +50,45 @@ public class Combat {
             turnNumber = 0;
             while(combatActive) {
                 turnNumber++;
-                Console.WriteLine($"Turn: {turnNumber}");
+                SendLog?.Invoke($"Turn: {turnNumber}");
                 CombatLoop();
             }
+            // TODO: Determine victor of combat
+            SendLog?.Invoke("Combat concluded");
+            GameManager.activeCombat = null;
         }
     }
 
     // TODO: implement turn loop
     public void CombatLoop() {
+        // Start Phase
         StartPhase?.Invoke(this);
+
+        // Main Phase
         MainPhase?.Invoke(this); // combatants choose actions on this step
         // establish turn priority, and all combatants use up their action accordingly
         actionQueue.Sort((x, y) => x.priority.CompareTo(y.priority));
         for (int i = 0; i < actionQueue.Count(); i++) {
-            actionQueue[i].FireAction();
-        } // since we have this kind of loop for the mainphase, we could reuse it for each phase of combat
-        actionQueue.Clear();
-        foreach (var team in combatTeams.Keys) {
-            int teamLength = combatTeams[team].Count();
-            int numDefeated = 0;
-            for (int i = 0; i <  teamLength; i++) {
-                if (combatTeams[team][i].isDefeated) {
-                    numDefeated++;
+            foreach (var team in combatTeams.Keys) {
+                int teamLength = combatTeams[team].Count();
+                int numDefeated = 0;
+                for (int j = 0; j <  teamLength; j++) {
+                    if (combatTeams[team][j].isDefeated) {
+                        numDefeated++;
+                    }
+                }
+                if (numDefeated == teamLength) {
+                    combatActive = false;
+                    return;
                 }
             }
-            if (numDefeated == teamLength) {
-                combatActive = false;
-                return;
-            }
-        }
+
+            actionQueue[i].FireAction();
+
+        } // since we have this kind of loop for the mainphase, we could reuse it for each phase of combat
+        actionQueue.Clear();
+
+        // End Phase
         EndPhase?.Invoke(this);
     }
 }

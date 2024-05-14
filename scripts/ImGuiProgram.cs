@@ -11,19 +11,17 @@ using static ImGuiNET.ImGuiNative;
 
 namespace ImGuiNET {
     public class ImGuiProgram {
+        protected string windowName = "Big Chungus";
         protected Sdl2Window _window;
         protected GraphicsDevice _gd;
         protected ImGuiController _controller;
         protected CommandList _cl;
 
-        public delegate bool GuiRefresh();
-        public event GuiRefresh guiUpdate;
-
         public static Vector3 _clearColor = new Vector3(0.45f, 0.55f, 0.6f);
 
         public void Run() {
             VeldridStartup.CreateWindowAndGraphicsDevice(
-                new WindowCreateInfo(50, 50, 1280, 720, WindowState.Normal, "Big Chungus"), 
+                new WindowCreateInfo(50, 50, 1280, 720, WindowState.Normal, windowName), 
                 new GraphicsDeviceOptions(true, null, true, ResourceBindingModel.Improved, true, true), 
                 out _window,
                 out _gd);
@@ -67,16 +65,9 @@ namespace ImGuiNET {
             _gd.Dispose();
         }
 
-        protected virtual void StartProgram() {
-        }
-
-        protected virtual void RunProgram() {
-            guiUpdate?.Invoke();
-        }
 
         protected virtual unsafe void SubmitUI()
         {
-            
         }
 
         

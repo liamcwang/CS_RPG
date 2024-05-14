@@ -1,5 +1,6 @@
 using System;
 using UserInput;
+using static EventUtil.GameLogs;
 
 public class Combatant {
     public delegate Combatant TargetFunction(Combat currCombat, TargetType targetType);
@@ -29,7 +30,7 @@ public class Combatant {
     }
 
     public void OnCombatStart(object? source, EventArgs e) {
-        System.Console.WriteLine($"{name} has joined combat");
+        SendLog?.Invoke($"{name} has joined combat");
         Combat? c = (Combat?) source ?? throw new ArgumentException("No combat found");
         c.combatants.Add(this);
         c.StartPhase += onStartPhase;
@@ -40,7 +41,7 @@ public class Combatant {
     public void TakeDamage(float num) {
         health -= num;
         if (health <= 0.1) {
-            Console.WriteLine($"{name} is defeated!");
+            SendLog?.Invoke($"{name} is defeated!");
             isDefeated = true;
         }
     }
@@ -60,7 +61,7 @@ public class Combatant {
     }
 
     public void onMainPhase(Combat currCombat) {
-        Console.WriteLine($"{name} is preparing an action");
+        SendLog?.Invoke($"{name} is preparing an action");
         action.PrepareAction(currCombat);
     }
 
@@ -79,4 +80,41 @@ public class Combatant {
     public Combatant UserPromptedTarget(Combat currCombat, TargetType targetType) {
         return ConsoleInput.ObtainTarget(this, currCombat, targetType);
     }
+}
+
+public class CombatAction {
+
+    public float priority = 0;
+    public CombatSkill combatSkill = new CombatSkill();
+
+    public Combatant origin;
+    public List<Combatant> targets = new List<Combatant>();
+    
+    public CombatAction(Combatant source) {
+        origin = source;
+        combatSkill = new CombatSkill();
+    }
+
+    /// <summary>
+    /// When targets have been set, we want to fire at the targets set
+    /// </summary>
+    public void FireAction() {
+        SendLog?.Invoke($"{origin.name}'s turn");
+        foreach(Combatant target in targets) {
+            SendLog?.Invoke($"{origin.name} used {combatSkill.name} on {target.name}!");
+            combatSkill.Trigger(target);
+        }
+        targets.Clear();
+    }
+
+    /// <summary>
+    /// Runs prior to FireAction, establishes targets of action
+    /// </summary>
+    /// <param name="currCombat"></param>
+    public void PrepareAction(Combat currCombat) {
+        targets.Add(origin.AssignTarget(currCombat, combatSkill.targetType));
+
+        currCombat.actionQueue.Add(this);
+    }
+
 }

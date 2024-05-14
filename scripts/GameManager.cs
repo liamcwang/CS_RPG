@@ -1,4 +1,5 @@
 using System;
+using static EventUtil.GameLogs;
 
 public class GameManager {
 
@@ -6,8 +7,8 @@ public class GameManager {
     private static Lazy<GameManager> _instance = new Lazy<GameManager>(() => new GameManager());
     public static GameManager Instance => _instance.Value;
 
-    private Combat _activeCombat = null!;
-    public static Combat activeCombat  {
+    private Combat? _activeCombat = null!;
+    public static Combat? activeCombat  {
         get => Instance._activeCombat;
         set => Instance._activeCombat = value;
     }
@@ -18,18 +19,24 @@ public class GameManager {
     public static Combatant[] enemies = [new Combatant("Rick", 1), new Combatant("Astley", 1)];
 
     private GameManager() {
-
+        SendLog += ConsoleLog;
     }
 
     public static void StartCombat() {
-        activeCombat = new Combat();
-        for (int i = 0; i < players.Length; i++) {
-            activeCombat.CombatStart += players[i].OnCombatStart;
-            activeCombat.CombatStart += enemies[i].OnCombatStart;
+        if (activeCombat == null) {
+            activeCombat = new Combat();
+            for (int i = 0; i < players.Length; i++) {
+                activeCombat.CombatStart += players[i].OnCombatStart;
+                activeCombat.CombatStart += enemies[i].OnCombatStart;
+            }
+            Thread thread = new Thread(activeCombat.Start);
+            thread.IsBackground = true;
+            thread.Start();
         }
-        activeCombat.Start();
-        
+    }
 
+    private static void ConsoleLog(string message) {
+        System.Console.WriteLine(message);
     }
 }
 
