@@ -1,6 +1,6 @@
 using System;
 using UserInput;
-using static EventUtil.GameLogs;
+using static EventUtil.EventLogs;
 
 public class Combatant {
     public delegate Combatant TargetFunction(Combat currCombat, TargetType targetType);

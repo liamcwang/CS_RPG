@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using static EventUtil.GameLogs;
+using static EventUtil.EventLogs;
 
 public class Combat {
     

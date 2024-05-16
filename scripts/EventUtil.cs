@@ -2,7 +2,7 @@ using System;
 
 namespace EventUtil
 {
-    public static class GameLogs
+    public static class EventLogs
     {
         public delegate void LogMessage(string s);
         public static LogMessage SendLog = (s) => {};

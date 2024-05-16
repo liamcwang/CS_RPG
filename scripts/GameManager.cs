@@ -1,5 +1,5 @@
 using System;
-using static EventUtil.GameLogs;
+using static EventUtil.EventLogs;
 
 public class GameManager {
 
@@ -15,6 +15,7 @@ public class GameManager {
 
     // TODO: need to figure out how to get the combatants into combat
     // TODO: Figure out how to randomly send a preset group of enemies
+    // TODO: Reset Combatants after combat
     public static Combatant[] players = [new Combatant("Leonardo", 0), new Combatant("Davinci", 0)];
     public static Combatant[] enemies = [new Combatant("Rick", 1), new Combatant("Astley", 1)];
 
@@ -25,6 +26,8 @@ public class GameManager {
     public static void StartCombat() {
         if (activeCombat == null) {
             activeCombat = new Combat();
+            players = [new Combatant("Leonardo", 0), new Combatant("Davinci", 0)];
+            enemies = [new Combatant("Rick", 1), new Combatant("Astley", 1)];
             for (int i = 0; i < players.Length; i++) {
                 activeCombat.CombatStart += players[i].OnCombatStart;
                 activeCombat.CombatStart += enemies[i].OnCombatStart;

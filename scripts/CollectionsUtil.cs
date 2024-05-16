@@ -11,6 +11,17 @@ namespace CollectionsUtil {
        public static int EnumLength(Type someEnum) {
             return Enum.GetNames(someEnum).Length;
        }
+
+       public static T?[] RemoveFirstElement<T> (this T[] arr) {
+            for (int i = 1; i < arr.Length; i++) {
+                arr[i-1] = arr[i];
+            }
+
+            arr[arr.Length - 1] = default(T);
+
+
+            return arr;
+       }
     }
 
     public class BitMask {
