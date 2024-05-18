@@ -12,7 +12,7 @@ namespace CollectionsUtil {
             return Enum.GetNames(someEnum).Length;
        }
 
-       public static T?[] RemoveFirstElement<T> (this T[] arr) {
+       public static T?[] RemoveFirstElement<T> (this T?[] arr) {
             for (int i = 1; i < arr.Length; i++) {
                 arr[i-1] = arr[i];
             }

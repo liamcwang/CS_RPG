@@ -8,7 +8,7 @@ public class Combatant {
     public int team = -1;
     public string name = "";
     public CombatAction action;
-    public List<CombatSkill>? skills;
+    public List<CombatSkill> skills = new List<CombatSkill>();
     public float health = 10f;
     private TargetFunction targetter = (c, tt) => throw new NullReferenceException("No valid target function set");
     public bool isDefeated = false;
