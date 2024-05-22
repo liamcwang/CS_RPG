@@ -5,7 +5,7 @@ using CollectionsUtil;
 public enum TargetType {NONE, ENEMY, ALLY, ANY};
 public enum RangeType {NONE, SELF, SINGLE, MULTIPLE};
 
-public struct CombatSkill {
+public class CombatSkill {
     public string name = "Big Chungus";
     public int priority = 0;
 
@@ -21,8 +21,8 @@ public struct CombatSkill {
     }
 
     public void Trigger(Combatant target) {
-        foreach(Effect e in effects) {
-            e.effectTrigger(target);
+        foreach(Effect ed in effects) {
+            ed.effectTrigger(target);
         }
     }
 }

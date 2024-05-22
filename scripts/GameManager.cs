@@ -19,7 +19,7 @@ public class GameManager {
     public static List<Combatant> combatantRef = [new Combatant("Leonardo", 0), new Combatant("Davinci", 0), new Combatant("Rick", 1), new Combatant("Astley", 1)];
     private static List<Combatant> _activeCombatants = new List<Combatant>();
 
-
+    // TODO: Combat skills all in one static reference
 
     private GameManager() {
         SendLog += ConsoleLog;

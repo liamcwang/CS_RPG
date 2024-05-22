@@ -14,6 +14,7 @@ namespace ImGuiNET
 {
     public class ImGuiProgramMain : ImGuiProgram
     {
+        private enum EditorState {COMBATANT, SKILL};
         private const int PAGE_BUFFER_SIZE = 64;
 
         private static int _counter = 0;
@@ -23,14 +24,16 @@ namespace ImGuiNET
         private static Queue<string> _messageBuffer = new Queue<string>();
         private static Vector2 _messageLogSize = new Vector2(300,200);
         // Set flags for the table
-        private static ImGuiTableFlags tableFlags = 
+        private static ImGuiTableFlags _tableFlags = 
         ImGuiTableFlags.RowBg | 
         ImGuiTableFlags.Borders | ImGuiTableFlags.BordersOuter | ImGuiTableFlags.BordersInner |
         ImGuiTableFlags.BordersH | ImGuiTableFlags.BordersOuterH | ImGuiTableFlags.BordersInnerH | 
         ImGuiTableFlags.BordersV | ImGuiTableFlags.BordersOuterV | ImGuiTableFlags.BordersInnerV;
         
-        private static bool _showSkillEditor = false;
-        private static Combatant _skillEditorCombatant;
+        private static EditorState _currentEditorState = EditorState.COMBATANT;
+        private static string[] _editorNames = {"Combatants", "Skills"};
+
+        private static int _combatantEditorPointer = -1;
 
         private static Vector2 _mousePos = ImGui.GetMousePos();
 
@@ -41,6 +44,8 @@ namespace ImGuiNET
 
         protected override unsafe void SubmitUI()
         {
+            _mousePos = ImGui.GetMousePos();
+
             #region Combat Simulation
             ImGui.Begin("Combat Simulation");
             if (ImGui.BeginChild("Message Log", _messageLogSize, ImGuiChildFlags.Border)) {
@@ -72,66 +77,114 @@ namespace ImGuiNET
             ImGui.End();
             #endregion
 
-            #region Combatant Editor
-            // TODO: this doesn't work, I have a few ideas
-            /* 1: Edit button that creates a window to edit one row at a time
-               2: Research a potential way to edit it like in a spreadsheet
-            */
-            ImGui.Begin("Combatant Editor");
-            if (ImGui.BeginTable("Table", 3, tableFlags)) {
-                for (int row = 0; row < GameManager.combatantRef.Count(); row++)
-                {
-                    ImGui.TableNextRow();
 
-                    Combatant currCombatant = GameManager.combatantRef[row];
-                    ImGui.TableSetColumnIndex(0);
-                    ImGui.PushID(row);
-                    string label = "Name";
-                    string currentValue = currCombatant.name;
-                    if (ImGui.InputText(label, ref currentValue, 32))
-                        currCombatant.name = currentValue;
-                    ImGui.PopID();
-
-                    ImGui.TableSetColumnIndex(1);
-                    ImGui.PushID(row + 1);
-                    label = "Team";
-                    currentValue = currCombatant.team.ToString();
-                    if (ImGui.InputText(label, ref currentValue, 32)) {
-                        int result;
-                        if (int.TryParse(currentValue, out result)) {
-                            currCombatant.team = result;
-                        }
+            #region Game Editor
+            if (ImGui.Begin("Game Editor")) {
+                for (int i = 0; i < _editorNames.Length; i++) {
+                    ImGui.PushID(i);
+                    string currName = _editorNames[i];
+                    bool editorSelected = _currentEditorState == (EditorState) i;
+                    ImGui.Selectable(currName, ref editorSelected);
+                    if (editorSelected) {
+                        _currentEditorState = (EditorState) i;
                     }
                     ImGui.PopID();
-
-                    ImGui.TableSetColumnIndex(2);
-                    ImGui.PushID(row + 2);
-                    label = "Skills";
-                    if (ImGui.Button(label)) {
-                        if (!_showSkillEditor) {
-                            _showSkillEditor = true;
-                        }
-                        _skillEditorCombatant = currCombatant;
-                    }
-                    ImGui.TextUnformatted(currCombatant.skills.Count().ToString());
-                    ImGui.PopID();
-
-
                 }
-                ImGui.EndTable();
 
-                if (_showSkillEditor) {
-                                
-                        RightClickCloseWindow(ref _showSkillEditor);
-                        
-                        ImGui.Begin("Skill Editor");
-                        ImGui.Text($"{_skillEditorCombatant.name}");
-                        ImGui.Text("Let's fucking go");
-                        ImGui.End();
+                #region Combatant Editor
+                // TODO: See layout on google sheets for layout reference
+                if (_currentEditorState == EditorState.COMBATANT) {
+                    ImGui.Begin("Combatant Editor");
+                    // if (ImGui.Button("Add New")) {
+                    //     GameManager.combatantRef.Add(new Combatant("", 0));
+                    // }
+                    Vector2 combatantEditorBounds = ImGui.GetContentRegionAvail();
+                    if (ImGui.BeginChild("Combatant Selector", new Vector2(combatantEditorBounds.X * 0.3f, combatantEditorBounds.Y), ImGuiChildFlags.Border)) 
+                    {
+                        if (ImGui.BeginTable("Combatant Table", 1, _tableFlags)) 
+                        {
+                            for (int i = 0; i < GameManager.combatantRef.Count(); i++) {
+                                ImGui.TableNextRow();
+                                ImGui.TableNextColumn();
+                                ImGui.PushID(i);
+                                bool combatantSelected = _combatantEditorPointer == i;
+                                ImGui.Selectable(GameManager.combatantRef[i].name, ref combatantSelected);
+                                if (combatantSelected) {
+                                    _combatantEditorPointer = i;
+                                }
+                                ImGui.PopID();
+
+                            }
+                            ImGui.EndTable();
+                        }
+                        ImGui.EndChild();
                     }
+                    ImGui.SameLine();
+                    if (_combatantEditorPointer > -1) 
+                    {
+                        ImGui.BeginGroup();
+                        Combatant currCombatant = GameManager.combatantRef[_combatantEditorPointer];
+
+                        if (ImGui.BeginChild("Combatant Info", new Vector2(combatantEditorBounds.X * 0.3f, combatantEditorBounds.Y * 0.3f), ImGuiChildFlags.Border)) 
+                        {
+                            string name = currCombatant.name;
+                            if (ImGui.InputText("Name", ref name, 32))
+                                currCombatant.name = name;
+                            int teamID = currCombatant.team;
+                            if(ImGui.InputInt("TeamID", ref teamID, 1))
+                                currCombatant.team = teamID;
+
+                            
+
+                            ImGui.EndChild();
+                        }
+                        
+                        if (ImGui.BeginChild("Combatant Skills", ImGui.GetContentRegionAvail(), ImGuiChildFlags.Border)) 
+                        {
+                            if (ImGui.BeginTable("Combatant Skills", 1, _tableFlags)) 
+                            {
+                                for (int i = 0; i < currCombatant.skills.Length; i++) 
+                                {
+                                    ImGui.TableNextRow();
+                                    ImGui.TableNextColumn();
+                                    ImGui.PushID(i);
+                                    
+                                    if (ImGui.Selectable(currCombatant.skills[i].name)) {
+                                        int currentItem = 0;
+                                        Console.WriteLine("aa");
+                                        // ImGui.Combo)
+
+                                    }
+                                    ImGui.PopID();
+                                }
+                                ImGui.EndTable();
+
+                            }
+                            ImGui.EndChild();
+                        }
+                        ImGui.EndGroup();
+                    }
+
+                    
+                    
+                    
+                    ImGui.End();
+                }
+                #endregion
+
+                #region Skill Editor
+                if (_currentEditorState == EditorState.SKILL) {
+                    ImGui.Begin("Skill Editor");
+                    
+                    
+                    ImGui.End();
+                }
+                #endregion
+
+                ImGui.End();
             }
-            ImGui.End();
             #endregion
+
         }
 
         private void ReceiveMessage(string message) {
@@ -139,10 +192,14 @@ namespace ImGuiNET
         }
 
         private void RightClickCloseWindow(ref bool showWindow) {
+            // in order for pos and size to be obtained properly, place within
+            // bounds of begin() end() of a window
             Vector2 windowPos = ImGui.GetWindowPos();
             Vector2 windowSize = ImGui.GetWindowSize();
-            bool isMouseInWindow = _mousePos.X >= windowPos.X && _mousePos.X <= (windowPos.X + windowSize.X) &&
-                    _mousePos.Y >= windowPos.Y && _mousePos.Y <= (windowPos.Y + windowSize.Y);
+            bool isMouseInWindow = _mousePos.X >= windowPos.X && 
+            _mousePos.X <= (windowPos.X + windowSize.X) &&
+            _mousePos.Y >= windowPos.Y && 
+            _mousePos.Y <= (windowPos.Y + windowSize.Y);
 
             if (isMouseInWindow && ImGui.IsMouseDown(ImGuiMouseButton.Right))
                             showWindow = false;
