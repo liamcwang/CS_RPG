@@ -16,10 +16,11 @@ public class GameManager {
     // TODO: need to figure out how to get the combatants into combat
     // TODO: Figure out how to randomly send a preset group of enemies
     // TODO: Reset Combatants after combat
+    // TODO: Change lists to arrays to keep space low
     public static List<Combatant> combatantRef = [new Combatant("Leonardo", 0), new Combatant("Davinci", 0), new Combatant("Rick", 1), new Combatant("Astley", 1)];
     private static List<Combatant> _activeCombatants = new List<Combatant>();
 
-    // TODO: Combat skills all in one static reference
+    public static List<CombatSkill> combatSkillRef = [new CombatSkill()];
 
     private GameManager() {
         SendLog += ConsoleLog;

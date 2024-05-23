@@ -27,9 +27,7 @@ public class Combatant {
             default:
                 break;
         }
-        for (int i = 0; i < skills.Length; i++) {
-            skills[i] = new CombatSkill();
-        }
+        
     }
 
     public void OnCombatStart(object? source, EventArgs e) {

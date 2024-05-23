@@ -11,12 +11,12 @@ public class CombatSkill {
 
     public TargetType targetType;
     public RangeType rangeType;
-    public List<Effect> effects = new List<Effect>();
-
+    public Effect[] effects = new Effect[100];
 
     public CombatSkill() {
         Effect e = new Effect();
-        effects.Add(e);
+        e.effectType = EffectType.DAMAGE;
+        effects[0] = e;
 
     }
 
