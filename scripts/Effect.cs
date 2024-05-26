@@ -1,6 +1,6 @@
 using System;
 
-public enum EffectType {NONE, DAMAGE, HEAL};
+public enum EffectType {NONE = -1, DAMAGE, HEAL};
 
 /// <summary>
 /// Holds a single trigger effect, defined when constructed.
