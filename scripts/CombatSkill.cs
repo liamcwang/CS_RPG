@@ -11,16 +11,16 @@ public class CombatSkill {
 
     public TargetType targetType;
     public RangeType rangeType;
-    public Effect[] effects = new Effect[100];
+    public Effect[] effects = new Effect[1];
 
     public CombatSkill() {
-        Effect e = new Effect();
-        e.effectType = EffectType.DAMAGE;
+        Effect e = new Effect(EffectType.DAMAGE);
         effects[0] = e;
 
     }
 
     public void Trigger(Combatant target) {
+        // Operates on the assume that we are passing good data to it
         foreach(Effect ed in effects) {
             ed.effectTrigger(target);
         }

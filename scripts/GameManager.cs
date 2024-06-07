@@ -24,6 +24,7 @@ public class GameManager {
 
     private GameManager() {
         SendLog += ConsoleLog;
+        FileReadWrite.Run();
     }
 
     public static void StartCombat() {

@@ -8,11 +8,11 @@ namespace CollectionsUtil {
             return arr;
         }
 
-       public static int EnumLength(Type someEnum) {
+        public static int EnumLength(Type someEnum) {
             return Enum.GetNames(someEnum).Length;
-       }
+        }
 
-       public static T?[] RemoveFirstElement<T> (this T?[] arr) {
+        public static T?[] RemoveFirstElement<T> (this T?[] arr) {
             for (int i = 1; i < arr.Length; i++) {
                 arr[i-1] = arr[i];
             }
@@ -21,7 +21,16 @@ namespace CollectionsUtil {
 
 
             return arr;
-       }
+        }
+
+        public static string ArrayToJSONString<T>(T[] arr, string fieldName) {
+            string stringBuffer = $"\"{fieldName}\": [\"{arr[0].ToString()}\"";
+            for (int i = 1; i < arr.Length; i++) {
+                stringBuffer += $", \"{arr[i].ToString()}\"";
+            }
+            stringBuffer += "]";
+            return stringBuffer;
+        }
     }
 
     public class BitMask {

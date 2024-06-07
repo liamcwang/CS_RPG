@@ -8,7 +8,7 @@ public class Combatant {
     public int team = -1;
     public string name = "";
     public CombatAction action;
-    public CombatSkill[] skills = new CombatSkill[100];
+    public CombatSkill[] skills = new CombatSkill[1];
     public float health = 10f;
     private TargetFunction targetter = (c, tt) => throw new NullReferenceException("No valid target function set");
     public bool isDefeated = false;

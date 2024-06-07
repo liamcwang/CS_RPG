@@ -113,6 +113,7 @@ namespace ImGuiNET
                     {
                         if (ImGui.BeginTable("Combatant Editor Table", 1, _tableFlags)) 
                         {
+                            // TODO: Remove every reference to GameManager
                             for (int i = 0; i < GameManager.combatantRef.Count(); i++) {
                                 ImGui.TableNextRow();
                                 ImGui.TableNextColumn();
@@ -233,7 +234,7 @@ namespace ImGuiNET
                             if (ImGui.Combo("Target Type", ref targetType, _skillTargetTypeNames, _skillTargetTypeNames.Length))
                                 currCombatSkill.targetType = (TargetType) targetType;
                             
-                            int rangeType = (int) currCombatSkill.targetType;
+                            int rangeType = (int) currCombatSkill.rangeType;
                             if (ImGui.Combo("Range Type", ref rangeType, _skillTargetTypeNames, _skillRangeTypeNames.Length))
                                 currCombatSkill.rangeType = (RangeType) rangeType;
                             ImGui.EndChild();

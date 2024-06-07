@@ -1,6 +1,6 @@
 using System;
 
-public enum EffectType {NONE = -1, DAMAGE, HEAL};
+public enum EffectType {NONE, DAMAGE, HEAL};
 
 /// <summary>
 /// Holds a single trigger effect, defined when constructed.
@@ -13,10 +13,8 @@ public struct Effect {
 
     // when I think of scaling this, it doesn't allow for enough arbitrary effects
     // need to understand how to separate it more.
-    public Effect() {
-    }
-
-    public void AssignTrigger(EffectType effectType) {
+    public Effect(EffectType newEffectType) {
+        this.effectType = newEffectType;
         switch (effectType) {
             case EffectType.DAMAGE:
                 effectTrigger = Damage;
