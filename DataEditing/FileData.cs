@@ -2,7 +2,7 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using static CollectionsUtil.CollectionHelper;
-
+using static EventUtil.DataRequests;
 
 namespace DataEditing {
     public struct EffectData {
@@ -38,7 +38,7 @@ namespace DataEditing {
     }
 
     public struct CombatSkillRef {
-        public string[] skillNames;
+        public string[] skillNames {get; set;}
 
         public CombatSkillRef(int size) {
             skillNames = new string[size];
@@ -46,9 +46,9 @@ namespace DataEditing {
     }
 
     public struct CombatantData {
-        public int[] teams;
-        public string[] names;
-        public CombatSkillRef[] skills;
+        public string[] names {get; set;}
+        public int[] teams {get; set;}
+        public CombatSkillRef[] skills {get; set;}
 
         public CombatantData(int size) {
             teams = new int[size];
@@ -61,15 +61,19 @@ namespace DataEditing {
     public class DataEditor {
         // TODO: Thinking about creating a temp file that stores all the active program information, then when we need to edit a batch of data we open the data for that part of the program
         // TODO: after working on all this stuff, it seems that my method is really stupid somehow. Maybe just iterate through the references in gamemanager instead? Or be stubborn and iterate the structures to their parts because they represent the modifieable state better
+        
+
 
         public static CombatSkillData AssembleCombatSkillData() {
-            CombatSkillData combatSkillData = new CombatSkillData(GameManager.combatSkillRef.Count());
+            CombatSkill[] combatSkillRef = new CombatSkill[0]; 
+            RequestCombatSkillsRef.Invoke(ref combatSkillRef);
+            CombatSkillData combatSkillData = new CombatSkillData(combatSkillRef.Count());
             string[] targetTypeNames = Enum.GetNames(typeof(TargetType));
             string[] rangeTypeNames = Enum.GetNames(typeof(RangeType));
             string[] effectTypeNames = Enum.GetNames(typeof(EffectType));
-            for (int i = 0; i < GameManager.combatSkillRef.Count(); i++) {
+            for (int i = 0; i < combatSkillRef.Count(); i++) {
                 // Break the CombatSkill object into its values and enter them into the arrays
-                CombatSkill cs = GameManager.combatSkillRef[i];
+                CombatSkill cs = combatSkillRef[i];
                 combatSkillData.names[i] = cs.name;
                 combatSkillData.priorities[i] = cs.priority;
                 combatSkillData.targetTypes[i] = targetTypeNames[(int) cs.targetType];
@@ -88,9 +92,11 @@ namespace DataEditing {
         }   
 
         public static CombatantData AssembleCombatantData() {
-            CombatantData combatantData = new CombatantData(GameManager.combatantRef.Count());
-            for (int i = 0; i < GameManager.combatantRef.Count(); i++) {
-                Combatant c = GameManager.combatantRef[i];
+            Combatant[] combatantRef = new Combatant[0];
+            RequestCombatantsRef.Invoke(ref combatantRef);
+            CombatantData combatantData = new CombatantData(combatantRef.Count());
+            for (int i = 0; i < combatantRef.Count(); i++) {
+                Combatant c = combatantRef[i];
                 combatantData.names[i] =  c.name;
                 combatantData.teams[i] = c.team;
                 CombatSkillRef skillRef = new CombatSkillRef(c.skills.Count());

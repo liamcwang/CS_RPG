@@ -11,7 +11,7 @@ public class Combatant {
     public CombatSkill[] skills = new CombatSkill[1];
     public float health = 10f;
     private TargetFunction targetter = (c, tt) => throw new NullReferenceException("No valid target function set");
-    public bool isDefeated = false;
+    public bool isDefeated = false; // TODO: Find way to remove this
 
     public Combatant(string newName, int teamID) {
         action = new CombatAction(this);
@@ -28,6 +28,7 @@ public class Combatant {
                 break;
         }
         
+        skills[0] = new CombatSkill(); // TODO: remove after proper implementation
     }
 
     public void OnCombatStart(object? source, EventArgs e) {
@@ -63,6 +64,10 @@ public class Combatant {
 
     public void onMainPhase(Combat currCombat) {
         SendLog?.Invoke($"{name} is preparing an action");
+        // Decide skill()
+        var rand = new Random();
+        int randInt = rand.Next(0, skills.Count());
+        action.combatSkill = skills[randInt];
         action.PrepareAction(currCombat);
     }
 
@@ -86,14 +91,13 @@ public class Combatant {
 public class CombatAction {
 
     public float priority = 0;
-    public CombatSkill combatSkill = new CombatSkill();
+    public CombatSkill combatSkill;
 
     public Combatant origin;
     public List<Combatant> targets = new List<Combatant>();
     
     public CombatAction(Combatant source) {
         origin = source;
-        combatSkill = new CombatSkill();
     }
 
     /// <summary>

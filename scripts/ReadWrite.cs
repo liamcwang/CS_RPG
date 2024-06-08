@@ -26,7 +26,7 @@ public class FileReadWrite {
             sw = new StreamWriter(filePath + $"\\Combatants.json");
             CombatantData combatantData = DataEditor.AssembleCombatantData();
             jsonString = JsonSerializer.Serialize(combatantData);
-            sw.WriteLine();
+            sw.WriteLine(jsonString);
             sw.Close();
         }
         catch(Exception e)
