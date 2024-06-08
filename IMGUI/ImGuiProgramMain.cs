@@ -31,8 +31,8 @@ namespace ImGuiNET
         ImGuiTableFlags.BordersH | ImGuiTableFlags.BordersOuterH | ImGuiTableFlags.BordersInnerH | 
         ImGuiTableFlags.BordersV | ImGuiTableFlags.BordersOuterV | ImGuiTableFlags.BordersInnerV;
 
-        private static Combatant[] combatantRef;
-        private static CombatSkill[] combatSkillRef;
+        public static Combatant[] combatantRef = RequestCombatantsRef.Invoke();
+        public static CombatSkill[] combatSkillRef = RequestCombatSkillsRef.Invoke();
 
         private static EditorState _currentEditorState = EditorState.COMBATANT;
         private static string[] _editorNames = {"Combatants", "Skills"};
@@ -49,9 +49,7 @@ namespace ImGuiNET
         public ImGuiProgramMain() {
             windowName = "MyProgram";
             SendLog += ReceiveMessage;
-            
-            RequestCombatantsRef.Invoke(ref combatantRef);
-            RequestCombatSkillsRef.Invoke(ref combatSkillRef);
+
         }
 
         protected override unsafe void SubmitUI()

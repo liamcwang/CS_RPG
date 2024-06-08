@@ -65,8 +65,7 @@ namespace DataEditing {
 
 
         public static CombatSkillData AssembleCombatSkillData() {
-            CombatSkill[] combatSkillRef = new CombatSkill[0]; 
-            RequestCombatSkillsRef.Invoke(ref combatSkillRef);
+            CombatSkill[] combatSkillRef = RequestCombatSkillsRef.Invoke();
             CombatSkillData combatSkillData = new CombatSkillData(combatSkillRef.Count());
             string[] targetTypeNames = Enum.GetNames(typeof(TargetType));
             string[] rangeTypeNames = Enum.GetNames(typeof(RangeType));
@@ -92,8 +91,7 @@ namespace DataEditing {
         }   
 
         public static CombatantData AssembleCombatantData() {
-            Combatant[] combatantRef = new Combatant[0];
-            RequestCombatantsRef.Invoke(ref combatantRef);
+            Combatant[] combatantRef = RequestCombatantsRef.Invoke();
             CombatantData combatantData = new CombatantData(combatantRef.Count());
             for (int i = 0; i < combatantRef.Count(); i++) {
                 Combatant c = combatantRef[i];

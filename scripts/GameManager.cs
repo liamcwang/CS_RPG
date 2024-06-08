@@ -17,7 +17,7 @@ public class GameManager {
     // TODO: need to figure out how to get the combatants into combat
     // TODO: Figure out how to randomly send a preset group of enemies
     // TODO: Reset Combatants after combat
-    // TODO: Change lists to arrays to keep space low
+    // TODO: Change lists to arrays to keep data compact
 
 
     private static List<Combatant> _activeCombatants = new List<Combatant>();
@@ -35,8 +35,7 @@ public class GameManager {
         }
         activeCombat = new Combat();
         _activeCombatants.Clear();
-        Combatant[] combatantRef = new Combatant[0];
-        RequestCombatantsRef.Invoke(ref combatantRef);
+        Combatant[] combatantRef = RequestCombatantsRef.Invoke();
 
         for (int i = 0; i < combatantRef.Count(); i++) {
             Combatant c = combatantRef[i];
