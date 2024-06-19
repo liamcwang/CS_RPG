@@ -2,7 +2,6 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using static CollectionsUtil.CollectionHelper;
-using static EventUtil.DataRequests;
 
 namespace DataEditing {
     public struct EffectData {
@@ -23,7 +22,6 @@ namespace DataEditing {
         public string[] targetTypes {get; set;}
         public string[] rangeTypes {get; set;}
         public EffectData[] effects {get; set;}
-        public int size;
 
         public CombatSkillData(int size) {
             names = new string[size];
@@ -31,7 +29,6 @@ namespace DataEditing {
             targetTypes = new string[size];
             rangeTypes = new string[size];
             effects = new EffectData[size];
-            this.size = size;
         }
 
         
@@ -65,7 +62,7 @@ namespace DataEditing {
 
 
         public static CombatSkillData AssembleCombatSkillData() {
-            CombatSkill[] combatSkillRef = RequestCombatSkillsRef.Invoke();
+            CombatSkill[] combatSkillRef = GameData.combatSkillRef;
             CombatSkillData combatSkillData = new CombatSkillData(combatSkillRef.Count());
             string[] targetTypeNames = Enum.GetNames(typeof(TargetType));
             string[] rangeTypeNames = Enum.GetNames(typeof(RangeType));
@@ -91,7 +88,7 @@ namespace DataEditing {
         }   
 
         public static CombatantData AssembleCombatantData() {
-            Combatant[] combatantRef = RequestCombatantsRef.Invoke();
+            Combatant[] combatantRef = GameData.combatantRef;
             CombatantData combatantData = new CombatantData(combatantRef.Count());
             for (int i = 0; i < combatantRef.Count(); i++) {
                 Combatant c = combatantRef[i];
@@ -105,6 +102,39 @@ namespace DataEditing {
                 combatantData.skills[i] = skillRef;
             }   
             return combatantData;
-        } 
+        }
+
+        /// <summary>
+        /// Unpacks a CombatSkillData bundle for use in the program
+        /// </summary>
+        /// <param name="combatSkillData"></param>
+        public static void UnpackCombatSkillDataBundle(CombatSkillData combatSkillData) {
+             
+            int dataLength = combatSkillData.names.Length;
+            GameData.combatSkillRef = new CombatSkill[dataLength];
+            for (int i = 0; i < dataLength; i++) {
+                GameData.combatSkillRef[i] = new CombatSkill();
+                GameData.combatSkillRef[i].name = combatSkillData.names[i];
+                GameData.combatSkillRef[i].priority = combatSkillData.priorities[i];
+                GameData.combatSkillRef[i].targetType = (TargetType) Enum.Parse(typeof(TargetType), combatSkillData.targetTypes[i]); 
+                GameData.combatSkillRef[i].rangeType = (RangeType) Enum.Parse(typeof(RangeType), combatSkillData.targetTypes[i]);
+
+                Effect[] effectData = new Effect[combatSkillData.effects.Length];
+                for (int j = 0; j < combatSkillData.effects.Length; j++) {
+                    EffectType effType = (EffectType) Enum.Parse(typeof(EffectType),combatSkillData.effects[i].types[j]);
+                    effectData[i] = new Effect(effType);
+                    effectData[i].value = combatSkillData.effects[i].values[j];
+                }
+                GameData.combatSkillRef[i].effects = effectData;
+            }
+        }
+
+        /// <summary>
+        /// Unpacks a CombatantData bundle for use in the program
+        /// </summary>
+        /// <param name="combatantData"></param>
+        public static void UnpackCombatantDataBundle(CombatantData combatantData) {
+
+        }
     }
 }

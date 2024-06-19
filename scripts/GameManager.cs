@@ -1,6 +1,5 @@
 using System;
 using static EventUtil.EventLogs;
-using static EventUtil.DataRequests;
 
 public class GameManager {
 
@@ -26,16 +25,15 @@ public class GameManager {
 
     private GameManager() {
         SendLog += ConsoleLog;
-        FileReadWrite.Run();
     }
 
     public static void StartCombat() {
-        if (activeCombat == null) {
+        if (activeCombat != null) {
             throw new NullReferenceException("Combat is still active, shouldn't start another");
         }
         activeCombat = new Combat();
         _activeCombatants.Clear();
-        Combatant[] combatantRef = RequestCombatantsRef.Invoke();
+        Combatant[] combatantRef = GameData.combatantRef;
 
         for (int i = 0; i < combatantRef.Count(); i++) {
             Combatant c = combatantRef[i];

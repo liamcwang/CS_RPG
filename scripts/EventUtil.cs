@@ -12,15 +12,4 @@ namespace EventUtil
         public static LogMessage SendLog = (s) => {};
     }
 
-    public static class DataRequests
-    {
-        /// <summary>
-        /// Because we are returning arrays, we will pass the reference to the array
-        /// </summary>
-        /// <param name="DataReference"></param>
-        /// <typeparam name="T"></typeparam>
-        public delegate T[] RequestDataArray<T>();
-        public static RequestDataArray<CombatSkill> RequestCombatSkillsRef = GameData.FulFillCombatSkillRefRequest;
-        public static RequestDataArray<Combatant> RequestCombatantsRef = GameData.FulfillCombatantRefRequest;
-    }
 }

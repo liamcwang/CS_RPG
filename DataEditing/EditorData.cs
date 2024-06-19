@@ -1,6 +1,16 @@
 using System;
 
-// Editor Data literally interprets the json files
+/// <summary>
+/// Maintains state about the editor
+/// </summary>
 public class EditorData {
+    
+}
+
+public struct CombatantEditorData {
+    
+}
+
+public struct CombatSkillEditorData {
     
 }

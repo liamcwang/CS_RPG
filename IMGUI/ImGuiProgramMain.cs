@@ -9,7 +9,6 @@ using Veldrid.StartupUtilities;
 
 using CollectionsUtil;
 using static EventUtil.EventLogs;
-using static EventUtil.DataRequests;
 
 namespace ImGuiNET
 {
@@ -31,8 +30,8 @@ namespace ImGuiNET
         ImGuiTableFlags.BordersH | ImGuiTableFlags.BordersOuterH | ImGuiTableFlags.BordersInnerH | 
         ImGuiTableFlags.BordersV | ImGuiTableFlags.BordersOuterV | ImGuiTableFlags.BordersInnerV;
 
-        public static Combatant[] combatantRef = RequestCombatantsRef.Invoke();
-        public static CombatSkill[] combatSkillRef = RequestCombatSkillsRef.Invoke();
+
+
 
         private static EditorState _currentEditorState = EditorState.COMBATANT;
         private static string[] _editorNames = {"Combatants", "Skills"};
@@ -49,13 +48,11 @@ namespace ImGuiNET
         public ImGuiProgramMain() {
             windowName = "MyProgram";
             SendLog += ReceiveMessage;
-
         }
 
         protected override unsafe void SubmitUI()
         {
             _mousePos = ImGui.GetMousePos();
-
             #region Combat Simulation
             ImGui.Begin("Combat Simulation");
             if (ImGui.BeginChild("Message Log", _messageLogSize, ImGuiChildFlags.Border)) {
@@ -110,7 +107,7 @@ namespace ImGuiNET
                     ImGui.Begin("Combatant Editor");
                     // TODO: Implement adding and removing new combatants
                     // if (ImGui.Button("Add New")) {
-                    //     combatantRef.Add(new Combatant("", 0));
+                    //     GameData.combatantRef.Add(new Combatant("", 0));
                     // }
                     Vector2 combatantEditorBounds = ImGui.GetContentRegionAvail();
                     if (ImGui.BeginChild("Combatant Selector", new Vector2(combatantEditorBounds.X * 0.2f, combatantEditorBounds.Y), ImGuiChildFlags.Border)) 
@@ -118,12 +115,12 @@ namespace ImGuiNET
                         if (ImGui.BeginTable("Combatant Editor Table", 1, _tableFlags)) 
                         {
                             // TODO: Remove every reference to GameManager
-                            for (int i = 0; i < combatantRef.Count(); i++) {
+                            for (int i = 0; i < GameData.combatantRef.Count(); i++) {
                                 ImGui.TableNextRow();
                                 ImGui.TableNextColumn();
                                 ImGui.PushID(i);
                                 bool combatantSelected = _combatantEditorPointer == i;
-                                ImGui.Selectable(combatantRef[i].name, ref combatantSelected);
+                                ImGui.Selectable(GameData.combatantRef[i].name, ref combatantSelected);
                                 if (combatantSelected) {
                                     _combatantEditorPointer = i;
                                 }
@@ -138,7 +135,7 @@ namespace ImGuiNET
                     if (_combatantEditorPointer > -1) 
                     {
                         ImGui.BeginGroup();
-                        Combatant currCombatant = combatantRef[_combatantEditorPointer];
+                        Combatant currCombatant = GameData.combatantRef[_combatantEditorPointer];
 
                         if (ImGui.BeginChild("Combatant Info", new Vector2(combatantEditorBounds.X * 0.3f, combatantEditorBounds.Y * 0.3f), ImGuiChildFlags.Border)) 
                         {
@@ -201,12 +198,12 @@ namespace ImGuiNET
                     {
                         if (ImGui.BeginTable("Skill Editor Table", 1, _tableFlags)) 
                         {
-                            for (int i = 0; i < combatSkillRef.Count(); i++) {
+                            for (int i = 0; i < GameData.combatSkillRef.Count(); i++) {
                                 ImGui.TableNextRow();
                                 ImGui.TableNextColumn();
                                 ImGui.PushID(i);
                                 bool skillSelected = _skillEditorPointer == i;
-                                ImGui.Selectable(combatSkillRef[i].name, ref skillSelected);
+                                ImGui.Selectable(GameData.combatSkillRef[i].name, ref skillSelected);
                                 if (skillSelected) {
                                     _skillEditorPointer = i;
                                 }
@@ -223,7 +220,7 @@ namespace ImGuiNET
                     if (_skillEditorPointer > -1) 
                     {
                         ImGui.BeginGroup();
-                        CombatSkill currCombatSkill = combatSkillRef[_skillEditorPointer];
+                        CombatSkill currCombatSkill = GameData.combatSkillRef[_skillEditorPointer];
 
                         if (ImGui.BeginChild("Skill Info", new Vector2(skillEditorBounds.X * 0.4f, ImGui.GetContentRegionAvail().Y), ImGuiChildFlags.Border)) {
                             string name = currCombatSkill.name;
@@ -231,7 +228,7 @@ namespace ImGuiNET
                                 currCombatSkill.name = name;
                             
                             int priority = currCombatSkill.priority;
-                            if (ImGui.InputInt("Priority", ref priority, 32))
+                            if (ImGui.InputInt("Priority", ref priority, 1))
                                 currCombatSkill.priority = priority;
                             
                             int targetType = (int) currCombatSkill.targetType;
