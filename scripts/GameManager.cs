@@ -37,7 +37,9 @@ public class GameManager {
 
         for (int i = 0; i < combatantRef.Count(); i++) {
             Combatant c = combatantRef[i];
-            Combatant newCombatant = new Combatant(c.name, c.team);
+            Combatant newCombatant = new Combatant();
+            newCombatant.name = c.name;
+            newCombatant.team = c.team;
             newCombatant.skills = c.skills;
             _activeCombatants.Add(newCombatant);
         }

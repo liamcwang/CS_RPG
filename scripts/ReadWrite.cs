@@ -6,72 +6,56 @@ public class FileReadWrite {
     // should be the path to our current directory
     public static string? globalFilePath = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
 
-    public static void WriteData() {
+    public static void WriteProgramData() {
         Console.WriteLine(globalFilePath); 
         string filePath = globalFilePath + "\\Data";
 
-        try
-        {
-            if (!Directory.Exists(filePath)) {
-               Directory.CreateDirectory(filePath);
-            }
+        if (!Directory.Exists(filePath)) {
+            Directory.CreateDirectory(filePath);
+        }
 
-            Console.WriteLine("Writing combatskills");
-            StreamWriter writer = new StreamWriter(filePath + $"\\CombatSkills.json");
-            CombatSkillData combatSkillData = DataEditor.AssembleCombatSkillData();
-            string jsonString = JsonSerializer.Serialize(combatSkillData);
-            writer.WriteLine(jsonString);
-            writer.Close();
+        // Console.WriteLine("Writing combatskills");
+        CombatSkillData combatSkillData = DataEditor.AssembleCombatSkillData();
+        WriteDataToFile<CombatSkillData>(filePath, "CombatSkills.json", combatSkillData);
 
-            Console.WriteLine("Writing Combatants");
-            writer = new StreamWriter(filePath + $"\\Combatants.json");
-            CombatantData combatantData = DataEditor.AssembleCombatantData();
-            jsonString = JsonSerializer.Serialize(combatantData);
-            writer.WriteLine(jsonString);
-            writer.Close();
-        }
-        catch(Exception e)
-        {
-            Console.WriteLine("Exception " + e.Message);
-        }
-        finally
-        {
-            Console.WriteLine("Executing finally");
-        }
+        // Console.WriteLine("Writing Combatants");
+        CombatantData combatantData = DataEditor.AssembleCombatantData();
+        WriteDataToFile<CombatantData>(filePath, "Combatant.json", combatantData);
 
         // TODO: Test deserializing the data into the form it was serialized from.
     }
 
-    public static void ReadData() {
+    public static void ReadProgramData() {
         Console.WriteLine(globalFilePath); 
         string filePath = globalFilePath + "\\Data";
 
-        try
-        {
-            if (!Directory.Exists(filePath)) {
-               Directory.CreateDirectory(filePath);
-            }
+        if (!Directory.Exists(filePath)) {
+            Directory.CreateDirectory(filePath);
+        }
 
-            Console.WriteLine("Reading combatskills");
-            StreamReader reader = new (filePath + $"\\CombatSkills.json");
-            string jsonString = reader.ReadToEnd();
-            CombatSkillData combatSkillData = JsonSerializer.Deserialize<CombatSkillData>(jsonString);
-            DataEditor.UnpackCombatSkillDataBundle(combatSkillData);
-            reader.Close();
+        // Console.WriteLine("Reading combatskills");
+        CombatSkillData combatSkillData = ReadDataFromFile<CombatSkillData>(filePath, "CombatSkills.json");
+        DataEditor.UnpackCombatSkillDataBundle(combatSkillData);
 
-            Console.WriteLine("Reading Combatants");
-            reader = new (filePath + $"\\Combatants.json");
-            jsonString = reader.ReadToEnd();
-            CombatantData combatantData = JsonSerializer.Deserialize<CombatantData>(jsonString);
-            reader.Close();
-        }
-        catch(Exception e)
-        {
-            Console.WriteLine("Exception " + e.Message);
-        }
-        finally
-        {
-            Console.WriteLine("Executing finally");
-        }
+        // Console.WriteLine("Reading Combatants");
+        CombatantData combatantData = ReadDataFromFile<CombatantData>(filePath, "Combatants.json");
+        DataEditor.UnpackCombatantDataBundle(combatantData);
+    }
+
+    private static void WriteDataToFile<T>(string filePath, string fileName, T data) {
+        Console.WriteLine($"Writing {fileName}");
+        StreamWriter writer = new StreamWriter(filePath + $"\\{fileName}");
+        string jsonString = JsonSerializer.Serialize(data);
+        writer.WriteLine(jsonString);
+        writer.Close();
+    }
+
+    private static T? ReadDataFromFile<T>(string filePath, string fileName) {
+        Console.WriteLine($"Reading {fileName}");
+        StreamReader reader = new (filePath + $"\\{fileName}");
+        string jsonString = reader.ReadToEnd();
+        T data = JsonSerializer.Deserialize<T>(jsonString);
+        reader.Close();
+        return data;
     }
 }

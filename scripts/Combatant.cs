@@ -8,15 +8,13 @@ public class Combatant {
     public int team = -1;
     public string name = "";
     public CombatAction action;
-    public CombatSkill[] skills = new CombatSkill[1];
+    public CombatSkill[] skills;
     public float health = 10f;
     private TargetFunction targetter = (c, tt) => throw new NullReferenceException("No valid target function set");
     public bool isDefeated = false; // TODO: Find way to remove this
 
-    public Combatant(string newName, int teamID) {
+    public Combatant() {
         action = new CombatAction(this);
-        name = newName;
-        team = teamID;
         switch(team) {
             case 0:
                 targetter = RandomTarget;
@@ -27,8 +25,7 @@ public class Combatant {
             default:
                 break;
         }
-        
-        skills[0] = new CombatSkill(); // TODO: remove after proper implementation
+
     }
 
     public void OnCombatStart(object? source, EventArgs e) {

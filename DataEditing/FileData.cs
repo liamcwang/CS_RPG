@@ -17,6 +17,7 @@ namespace DataEditing {
     }
 
     public struct CombatSkillData {
+        // public int id {get; set;}
         public string[] names {get; set;}
         public int[] priorities {get; set;}
         public string[] targetTypes {get; set;}
@@ -109,15 +110,16 @@ namespace DataEditing {
         /// </summary>
         /// <param name="combatSkillData"></param>
         public static void UnpackCombatSkillDataBundle(CombatSkillData combatSkillData) {
-             
+            
+            // Create initial reference
             int dataLength = combatSkillData.names.Length;
             GameData.combatSkillRef = new CombatSkill[dataLength];
             for (int i = 0; i < dataLength; i++) {
-                GameData.combatSkillRef[i] = new CombatSkill();
-                GameData.combatSkillRef[i].name = combatSkillData.names[i];
-                GameData.combatSkillRef[i].priority = combatSkillData.priorities[i];
-                GameData.combatSkillRef[i].targetType = (TargetType) Enum.Parse(typeof(TargetType), combatSkillData.targetTypes[i]); 
-                GameData.combatSkillRef[i].rangeType = (RangeType) Enum.Parse(typeof(RangeType), combatSkillData.targetTypes[i]);
+                CombatSkill newCombatSkill = new CombatSkill();
+                newCombatSkill.name = combatSkillData.names[i];
+                newCombatSkill.priority = combatSkillData.priorities[i];
+                newCombatSkill.targetType = (TargetType) Enum.Parse(typeof(TargetType), combatSkillData.targetTypes[i]); 
+                newCombatSkill.rangeType = (RangeType) Enum.Parse(typeof(RangeType), combatSkillData.targetTypes[i]);
 
                 Effect[] effectData = new Effect[combatSkillData.effects.Length];
                 for (int j = 0; j < combatSkillData.effects.Length; j++) {
@@ -125,7 +127,16 @@ namespace DataEditing {
                     effectData[i] = new Effect(effType);
                     effectData[i].value = combatSkillData.effects[i].values[j];
                 }
-                GameData.combatSkillRef[i].effects = effectData;
+                newCombatSkill.effects = effectData;
+
+                GameData.combatSkillRef[i] = newCombatSkill;
+            }
+
+            // Assemble Dictionary
+            GameData.combatSkillDict = new Dictionary<string, CombatSkill>();
+            for (int i = 0; i < dataLength; i++) {
+                string skillName = GameData.combatSkillRef[i].name;
+                GameData.combatSkillDict[skillName] = GameData.combatSkillRef[i];
             }
         }
 
@@ -134,7 +145,21 @@ namespace DataEditing {
         /// </summary>
         /// <param name="combatantData"></param>
         public static void UnpackCombatantDataBundle(CombatantData combatantData) {
-
+            int dataLength = combatantData.names.Length;
+            GameData.combatantRef = new Combatant[dataLength];
+            for (int i = 0; i < dataLength; i++) {
+                Combatant newCombatant = new Combatant();
+                newCombatant.name = combatantData.names[i];
+                newCombatant.team = combatantData.teams[i];
+                
+                CombatSkill[] combatSkills = new CombatSkill[combatantData.skills[i].skillNames.Length];
+                for (int j = 0; j < combatSkills.Length; j++) {
+                    string skillName = combatantData.skills[i].skillNames[j];
+                    combatSkills[j] = GameData.combatSkillDict[skillName];
+                }
+                newCombatant.skills = combatSkills;
+                GameData.combatantRef[i] = newCombatant;
+            }
         }
     }
 }

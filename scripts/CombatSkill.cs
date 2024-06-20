@@ -6,7 +6,7 @@ public enum TargetType {NONE, ENEMY, ALLY, ANY};
 public enum RangeType {NONE, SELF, SINGLE, MULTIPLE};
 
 public class CombatSkill {
-    public string name;
+    public string name = "";
     public int priority = 0;
 
     public TargetType targetType;

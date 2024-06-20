@@ -52,6 +52,7 @@ namespace ImGuiNET
 
         protected override unsafe void SubmitUI()
         {
+            ProgramHotKeys();
             _mousePos = ImGui.GetMousePos();
             #region Combat Simulation
             ImGui.Begin("Combat Simulation");
@@ -86,8 +87,9 @@ namespace ImGuiNET
 
 
             #region Game Editor
-            if (ImGui.Begin("Game Editor")) 
+            if (ImGui.Begin("Game Editor", ImGuiWindowFlags.MenuBar)) 
             {
+                ShowFileMenuBar();
                 for (int i = 0; i < _editorNames.Length; i++) 
                 {
                     ImGui.PushID(i);
@@ -114,7 +116,6 @@ namespace ImGuiNET
                     {
                         if (ImGui.BeginTable("Combatant Editor Table", 1, _tableFlags)) 
                         {
-                            // TODO: Remove every reference to GameManager
                             for (int i = 0; i < GameData.combatantRef.Count(); i++) {
                                 ImGui.TableNextRow();
                                 ImGui.TableNextColumn();
@@ -300,5 +301,26 @@ namespace ImGuiNET
             if (isMouseInWindow && ImGui.IsMouseDown(ImGuiMouseButton.Right))
                             showWindow = false;
         }
+
+        private void ShowFileMenuBar() {
+            if (ImGui.BeginMenuBar()) {
+                if (ImGui.BeginMenu("File")) {
+
+                    if (ImGui.MenuItem("Save", "Ctrl+S")) {
+                        FileReadWrite.WriteProgramData();
+                    }
+                    ImGui.EndMenu();
+                }
+                ImGui.EndMenuBar();
+            }
+        }
+
+        private void ProgramHotKeys() {
+            if (ImGui.IsKeyDown(ImGuiKey.ModCtrl) && ImGui.IsKeyPressed(ImGuiKey.S)) {
+                FileReadWrite.WriteProgramData();
+            }
+        }
     }
+
+    
 }
