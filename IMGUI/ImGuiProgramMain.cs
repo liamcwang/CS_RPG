@@ -258,7 +258,7 @@ namespace ImGuiNET
                                         s = Enum.GetName(currCombatSkill.effects[i].effectType);
                                     if (ImGui.Selectable(s)) 
                                     {
-                                        // TODO: Implement changing skills via reference
+                                        
                                         int currentItem = 0;
                                         // ImGui.Combo)
 

@@ -56,7 +56,7 @@ namespace DataEditing {
     }
 
 
-    public class DataEditor {
+    public class DataPackager {
         // TODO: Thinking about creating a temp file that stores all the active program information, then when we need to edit a batch of data we open the data for that part of the program
         // TODO: after working on all this stuff, it seems that my method is really stupid somehow. Maybe just iterate through the references in gamemanager instead? Or be stubborn and iterate the structures to their parts because they represent the modifieable state better
         

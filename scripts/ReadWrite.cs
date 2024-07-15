@@ -15,11 +15,11 @@ public class FileReadWrite {
         }
 
         // Console.WriteLine("Writing combatskills");
-        CombatSkillData combatSkillData = DataEditor.AssembleCombatSkillData();
+        CombatSkillData combatSkillData = DataPackager.AssembleCombatSkillData();
         WriteDataToFile<CombatSkillData>(filePath, "CombatSkills.json", combatSkillData);
 
         // Console.WriteLine("Writing Combatants");
-        CombatantData combatantData = DataEditor.AssembleCombatantData();
+        CombatantData combatantData = DataPackager.AssembleCombatantData();
         WriteDataToFile<CombatantData>(filePath, "Combatant.json", combatantData);
 
         // TODO: Test deserializing the data into the form it was serialized from.
@@ -35,11 +35,11 @@ public class FileReadWrite {
 
         // Console.WriteLine("Reading combatskills");
         CombatSkillData combatSkillData = ReadDataFromFile<CombatSkillData>(filePath, "CombatSkills.json");
-        DataEditor.UnpackCombatSkillDataBundle(combatSkillData);
+        DataPackager.UnpackCombatSkillDataBundle(combatSkillData);
 
         // Console.WriteLine("Reading Combatants");
         CombatantData combatantData = ReadDataFromFile<CombatantData>(filePath, "Combatants.json");
-        DataEditor.UnpackCombatantDataBundle(combatantData);
+        DataPackager.UnpackCombatantDataBundle(combatantData);
     }
 
     private static void WriteDataToFile<T>(string filePath, string fileName, T data) {
